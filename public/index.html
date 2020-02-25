@@ -1,10 +1,52 @@
 <!doctype html>
 <html>
-<head>
-    <title></title>
-</head>
-<body>
-    <script src="/js/vue.js"></script>
-    <script src="/js/axios.min.js"></script>
-</body>
+
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="/css/style.css">
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Dancing+Script|Pacifico|Varela+Round&display=swap"
+            rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- <h1>My imageboard</h1>
+        <div id="main">
+            <h2 @click="muffin">
+                the best cohort is....{{cohort}}
+            </h2>
+            <h2>Maths!! 2 * 2 = {{2 * 2}}</h2>
+            <h2>My name is {{name.first + " " + name.last}}</h2>
+            <h2>CAPITALIZE!: {{"allspice".toUpperCase()}}</h2>
+            <h2 v-if="seen">can you see me?</h2>
+            <ul>
+                <li v-for="city in cities" @click="muffin(city.name)">{{city.name}}, {{city.country}}
+
+                </li>
+            </ul>
+        </div> -->
+        <div id="main">
+            <div class="image-board-title">
+                <h1>Imageboard</h1>
+            </div>
+            <form>
+
+                <input v-model="title" type="text" name="title" placeholder="title"></input>
+                <input v-model="description" type="text" name="description" placeholder="description"></input>
+                <input v-model="username" type="text" name="username" placeholder="username"></input>
+                <input @change="handleChange" type="file" name="file" accept="images/*"></input>
+                <button @click="handleClick">submit</button>
+            </form>
+            <div class="images-container">
+                <div class="image-card" v-for="image in images">
+                    <img :src="image.url" :alt="image.title">
+                    <p align="center"> {{image.title}} </p>
+                    <p align="center" class="image-description">{{image.description}}</p>
+                </div>
+            </div>
+        </div>
+        <script src="/js/vue.js"></script>
+        <script src="/js/axios.min.js"></script>
+        <script src="/js/script.js"></script>
+    </body>
+
 </html>
