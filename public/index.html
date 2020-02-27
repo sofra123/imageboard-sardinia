@@ -29,7 +29,6 @@
                 <h1>Imageboard</h1>
             </div>
             <form>
-
                 <input v-model="title" type="text" name="title" placeholder="title"></input>
                 <input v-model="description" type="text" name="description" placeholder="description"></input>
                 <input v-model="username" type="text" name="username" placeholder="username"></input>
@@ -38,12 +37,44 @@
             </form>
             <div class="images-container">
                 <div class="image-card" v-for="image in images">
-                    <img :src="image.url" :alt="image.title">
-                    <p align="center"> {{image.title}} </p>
-                    <p align="center" class="image-description">{{image.description}}</p>
+                    <a @click="toggleComponent(image.id)">
+                        <a :href=" '#' + image.id">
+                            <img :src="image.url" :alt="image.title">
+                        </a>
+                        <p align="center"> {{image.title}} </p>
+                        <p align="center" class="image-description">{{image.description}}</p>
+                </div>
+            </div>
+
+            <button align="bottom" id="more" @click="getMoreImages" v-if="moreButton">More</button>
+
+            <my-first-component :id='id' v-if="id" @message='closeComponent'>
+            </my-first-component>
+
+
+        </div>
+
+        <!--outside of main -->
+        <script id='my-component' type="text/x-template">
+            <div>
+                <div class="modal">
+                    <h1 align="right" @click="handleClick()">X</h1>          
+                <h1>image is here {{id}}</h1>
+                    <img :src="image.url" :alt="image.title">  
+                </div>
+                <form>
+                    <input v-model="comment" type="text" name="comment" placeholder="comment"></input>
+                    <input v-model="username" type="text" name="username" placeholder="username"></input>
+                    <button @click="submitComment">Submit</button>
+                </form>
+                <div class="comment-card" v-for="comm in comments">
+                    <h3>{{comm.comment}}</h3>
+                    <h5>{{comm.username}}</h5>
+                    <h5>Create at {{comm.created_at}} by {{comm.username}}</h5>
                 </div>
             </div>
         </div>
+        </script>
         <script src="/js/vue.js"></script>
         <script src="/js/axios.min.js"></script>
         <script src="/js/script.js"></script>

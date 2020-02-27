@@ -1,35 +1,11 @@
 const express = require("express");
 const app = express();
-
+const s3 = require("./s3.js")
+const s3Url = require("./config.json");
 //this serves all html/css/front end js
 
 app.use(express.static("public"));
-
-// any routes are just for info/data...
-// app.get("/cities", (req, res) =>
-// {
-//     console.log("I am the get route for cities");
-//     const cities = [
-//         {
-//             name: "Berlin",
-//             country: "Germany"
-//         },
-//         {
-//             name: "Guayaquil",
-//             country: "Equador"
-
-//         },
-//         {
-//             name: "Kinross",
-//             country: "Scotland!!!"
-//         }
-//     ];
-//     // we will be using res.json a lot!
-//     res.json(cities)
-// });
-
-
-
+app.use(express.json())
 const db = require("./db");
 
 /// FILE UPLOAD BOILERPLATE CODE ---do not touch
@@ -38,14 +14,11 @@ const uidSafe = require('uid-safe');
 const path = require('path');
 
 const diskStorage = multer.diskStorage({
-    destination: function (req, file, callback)
-    {
+    destination: function (req, file, callback) {
         callback(null, __dirname + '/uploads');
     },
-    filename: function (req, file, callback)
-    {
-        uidSafe(24).then(function (uid)
-        {
+    filename: function (req, file, callback) {
+        uidSafe(24).then(function (uid) {
             callback(null, uid + path.extname(file.originalname));
         });
     }
@@ -61,33 +34,74 @@ const uploader = multer({
 
 
 
-app.get("/images", (req, res) =>
-{
-    console.log("GET request for /images ");
+app.get("/images", (req, res) => {
+    //console.log("GET request for /images ");
     db.getImages()
-        .then(result =>
-        {
-            console.log(result)
+        .then(result => {
+            // console.log("ImageData: " + JSON.stringify(result));
             const images = result.rows;
             res.json(images);
         })
-        .catch(function (err)
-        {
+        .catch(function (err) {
             console.log("error in get images: ", err);
         });
 });
 
-app.post("/upload", uploader.single("file"), (req, res) =>
-{
+
+app.get("/images/:id", (req, res) => {
+    console.log("GET request for /images:id ");
+    console.log("req.params", req.params);
+    db.getIdImages(req.params.id)
+        .then(result => {
+            console.log(result)
+            imageData = result.rows[0];
+            console.log("imageData", imageData);
+            res.json(imageData);
+        })
+        .catch(function (err) {
+            console.log("error in get images:id ", err);
+        });
+});
+
+
+
+app.get("/comment/:id", (req, res) => {
+    console.log("get request for comments")
+    db.getComment(req.params.id).then(result => {
+            console.log("result.rows from comment/:id ", result.rows)
+            commentData = result.rows;
+            console.log("commentData", commentData);
+            res.json(commentData);
+        })
+        .catch(function (err) {
+            console.log("error in get comment:id ", err);
+        });
+})
+
+
+
+app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
     console.log("input ", req.body);
     console.log("file ", req.file);
     console.log("POST request for /upload ");
+    let url = "https://s3.amazonaws.com/francybucket/" + req.file.filename;
+    let title = req.body.title;
+    let description = req.body.description;
+    let username = req.body.username;
 
 
     if (req.file) {
-        res.json({
-            success: true
-        });
+
+        db.insertImages(url, title, description, username).then(result => {
+            console.log("result in post upload", result)
+            res.json({
+                success: true,
+                result
+            });
+
+        }).catch(function (err) {
+            console.log("error in post upload", err)
+        })
 
     } else {
         res.json({
@@ -96,7 +110,43 @@ app.post("/upload", uploader.single("file"), (req, res) =>
     }
 })
 
+app.post("/comment", (req, res) => {
+    console.log("req.body.userComment", req.body.userComment);
+    console.log("req.body.userName", req.body.userName);
+    console.log("req.body.imgId", req.body.imgId);
+    let username = req.body.userName;
+    let comment = req.body.userComment;
+    let imgId = req.body.imgId;
+
+    db.insertComment(imgId, username, comment).then(result => {
+        console.log("result in POST /comment", result)
+        res.json({
+            success: result
+        });
+    }).catch(function (err) {
+        console.log("error in comment upload", err)
+    })
+
+    // res.json({
+    //     success: [comment]
+    // })
+})
+
+
+app.post("/get-more-images", (req, res) => {
+    console.log("server for /images:lastId")
+    console.log(req.body.id, "req.body.id")
+    db.getMoreImages(req.body.id).then(result => {
+        console.log("result in GET more images", result)
+        //res.json(response);
+    }).catch(function (err) {
+        console.log("error in get more images", err)
+    })
+
+})
+
+
+
 
 
 app.listen(8080, () => console.log("imageboard!"))
-

@@ -1,22 +1,20 @@
-body {
-
-   
-}
+body {}
 
 img {
-    
-        
-        height: 250px;
-        width: 250px;
+
+
+    height: 280px;
+    width: 280px;
+    border-radius: 7px;
 
 }
 
 .image-container {
-    
-        display: flex;
-        flex-flow: row wrap;
-        align-content: space-around;
-        justify-content: space-around;
+
+    display: flex;
+    flex-flow: row wrap;
+    align-content: space-around;
+    justify-content: space-around;
 
 }
 
@@ -28,6 +26,7 @@ img {
     text-align: center;
     border-radius: 10px;
     background-color: white;
+
 }
 
 
@@ -37,8 +36,9 @@ img {
     align-items: center;
     border-bottom: solid black;
     margin-bottom: 27px;
-  
+
 }
+
 .image-board-title h1 {
     font-size: 51px;
     border: 1 px solid black;
@@ -48,21 +48,25 @@ img {
 form {
     display: flex;
     justify-content: center;
-    align-items: center;  
+    align-items: center;
 }
+
 form input {
     border-radius: 5px;
-    width: 160px;
-    height: 22px;
+    width: 162px;
+    height: 26px;
     margin: 13px;
 }
 
 
-.image-card p{
-    font-family: 'Varela round' ;
+.image-card p {
+    font-family: 'Varela round';
 }
 
-button{
+button {
     width: 100px;
-    height: 30px;
+    height: 27px;
+    border-radius: 5px;
+    border: 1px solid black;
+    cursor: pointer;
 }
