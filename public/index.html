@@ -25,31 +25,38 @@
             </ul>
         </div> -->
         <div id="main">
-            <div class="image-board-title">
-                <h1>Imageboard</h1>
-            </div>
-            <form>
-                <input v-model="title" type="text" name="title" placeholder="title"></input>
-                <input v-model="description" type="text" name="description" placeholder="description"></input>
-                <input v-model="username" type="text" name="username" placeholder="username"></input>
-                <input @change="handleChange" type="file" name="file" accept="images/*"></input>
-                <button @click="handleClick">submit</button>
-            </form>
+            <header>
+                <div class="image-board-title">
+
+                    <span class="title">Sardigram</span>
+                    <span>Lovely pictures from Sardinia</span>
+
+
+                </div>
+                <form>
+                    <input v-model="title" type="text" name="title" placeholder="location" required></input>
+                    <input v-model="description" type="text" name="description" placeholder="description"></input>
+                    <input v-model="username" type="text" name="username" placeholder="username" required></input>
+                    <input @change="handleChange" type="file" name="file" accept="images/*"></input>
+                    <button @click="handleClick">submit</button>
+                </form>
+            </header>
             <div class="images-container">
                 <div class="image-card" v-for="image in images">
                     <a @click="toggleComponent(image.id)">
                         <a :href=" '#' + image.id">
-                            <img :src="image.url" :alt="image.title">
+                            <img id="smallImg" :src="image.url" :alt="image.title">
                         </a>
                         <p align="center"> {{image.title}} </p>
-                        <p align="center" class="image-description">{{image.description}}</p>
+                        <!-- <p align="center" class="image-description">{{image.description}}</p> -->
                 </div>
             </div>
 
-            <button align="bottom" id="more" @click="getMoreImages" v-if="moreButton">More</button>
-
-            <my-first-component :id='id' v-if="id" @message='closeComponent'>
-            </my-first-component>
+            <button align="right" id="more" @click="getMoreImages" v-if="moreButton">More</button>
+            <transition name="animation">
+                <my-first-component :id='id' v-if="id" @message='closecomponent' @closedelete='closecomponent'>
+                </my-first-component>
+            </transition>
 
 
         </div>
@@ -57,21 +64,40 @@
         <!--outside of main -->
         <script id='my-component' type="text/x-template">
             <div>
+
                 <div class="modal">
-                    <h1 align="right" @click="handleClick()">X</h1>          
-                <h1>image is here {{id}}</h1>
-                    <img :src="image.url" :alt="image.title">  
-                </div>
-                <form>
+                    <img class="close" src="images/close.png"   align="right" @click="handleClick()"/>          
+                    <div class="top">
+                 <div class="left">
+                <div class="image-card">
+                    <img id="bigImg" :src="image.url" :alt="image.title">  
+                    <p align="center"> {{image.title}}</p>
+                    <p align="center" class="image-description">{{image.description}}</p>
+                    <h5 align="center" class="image-description">Uploaded by {{image.username}} on {{image.created_at}}</h5>
+            </div>
+        </div>
+            <div class="right">
+                   
+            <form id="form-comment">
                     <input v-model="comment" type="text" name="comment" placeholder="comment"></input>
                     <input v-model="username" type="text" name="username" placeholder="username"></input>
                     <button @click="submitComment">Submit</button>
                 </form>
-                <div class="comment-card" v-for="comm in comments">
-                    <h3>{{comm.comment}}</h3>
-                    <h5>{{comm.username}}</h5>
-                    <h5>Create at {{comm.created_at}} by {{comm.username}}</h5>
+                <div class="comment-container">
+                        <!-- <p>Comments</p> -->
+                        <div class="comment-card" v-for="comm in comments">
+                            <h3>{{comm.comment}}</h3>
+                            <h5>{{comm.username}}</h5>
+                            <h5>{{comm.username}} on {{comm.created_at}}</h5>
+                        </div>
+                    </div>
+                  
                 </div>
+                
+                    </div>
+                        <div class="delete">
+                        <img src="images/trash.png"align="right" @click="deleteImg">
+                        </div> 
             </div>
         </div>
         </script>

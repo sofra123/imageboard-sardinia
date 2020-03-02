@@ -1,21 +1,37 @@
 body {}
 
-img {
+#smallImg {
 
 
-    height: 280px;
-    width: 280px;
+    height: 300px;
+    width: 330px;
     border-radius: 7px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.21);
 
 }
 
-.image-container {
+
+#bigImg {
+
+
+    height: 400px;
+    width: 380px;
+    border-radius: 7px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.21);
+    margin: 10px;
+
+}
+
+.images-container {
 
     display: flex;
     flex-flow: row wrap;
     align-content: space-around;
     justify-content: space-around;
-
+    position: relative;
+    text-align: center;
+    padding-bottom: 26px;
+    margin-top: 316px;
 }
 
 .image-card {
@@ -24,14 +40,16 @@ img {
     margin: 8px;
     padding: 5px;
     text-align: center;
+    background: #FFFFFF;
     border-radius: 10px;
-    background-color: white;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.21);
 
 }
 
 
 .image-board-title {
     display: flex;
+    flex-flow: column;
     justify-content: center;
     align-items: center;
     border-bottom: solid black;
@@ -39,9 +57,19 @@ img {
 
 }
 
-.image-board-title h1 {
+
+
+.image-board-title span {
+    font-size: 37px;
+
+    font-family: "amatic SC";
+    padding: 5px;
+}
+
+
+.image-board-title .title {
     font-size: 51px;
-    border: 1 px solid black;
+
     font-family: "amatic SC";
 }
 
@@ -49,6 +77,8 @@ form {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-bottom: 35px;
+    flex-flow: row wrap;
 }
 
 form input {
@@ -56,17 +86,148 @@ form input {
     width: 162px;
     height: 26px;
     margin: 13px;
+    font-size: 15x;
 }
 
 
 .image-card p {
-    font-family: 'Varela round';
+    font-family: 'Dancing+script';
+    font-size: 18px;
+}
+
+.image-card:hover {
+    box-shadow: 13px 20px 20px rgba(0, 0, 0, 0.21);
+
+
 }
 
 button {
     width: 100px;
     height: 27px;
-    border-radius: 5px;
     border: 1px solid black;
     cursor: pointer;
+    border-radius: 7px;
+    font-size: 22px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.21);
+    font-family: "amatic sc";
+}
+
+
+
+
+button:hover {
+    box-shadow: 2px 6px 6px rgba(0, 0, 0, 0.21);
+}
+
+.modal {
+    border-radius: 7px;
+    padding: 20px;
+    box-shadow: 2px 7px 9px rgba(0, 0, 0, 0.21);
+    background-color: white;
+    position: absolute;
+    padding: 20px;
+    justify-content: center;
+    height: fit-content;
+    z-index: 9999;
+    width: 91%;
+    height: 90%;
+    left: 36px;
+    top: 162px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.modal h1 {
+    font-size: 15px;
+    right: 2px;
+    top: 0;
+
+
+}
+
+.modal #form-comment {
+    display: flex;
+
+    align-items: center;
+
+    flex-flow: row wrap;
+    padding: 17px;
+}
+
+
+.comment-card {
+    margin-left: 17px;
+    font-family: amatic sc;
+    font-size: 20px;
+}
+
+
+header {
+    position: fixed;
+    z-index: 9999;
+    padding: 15px 0;
+    background: #fff;
+    transition: .5s;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: fit-content;
+    box-shadow: rgba(0, 0, 0, .2) 0 0 3px;
+}
+
+
+body {
+
+    padding: 0px;
+    margin: 0px;
+}
+
+
+#more {
+    bottom: 0;
+    margin: 30px;
+}
+
+
+.top {
+    display: flex;
+
+}
+
+.delete {
+    margin-right: 31px;
+}
+
+.close {
+    width: 40px;
+    top: 19px;
+    right: 50px;
+    position: absolute;
+    align-content: right
+}
+
+.comment-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.21);
+    padding-left: 5px;
+    padding-bottom: 1px;
+
+}
+
+
+.animation-leave-active {
+    transition: all 0.4s ease;
+}
+
+.animation-leave-to {
+    transform: scale(2, 0.5);
+    transform: translateX(-100px);
+}
+
+
+
+p .comment-card {
+    font-family: 'Dancing+script';
 }

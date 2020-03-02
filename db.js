@@ -5,12 +5,17 @@ var db = spicedPg("postgres:postgres:postgres@localhost:5432/imageboard");
 
 exports.getImages = () => {
     return db.query(
-        `SELECT * FROM images
-        ORDER BY created_at DESC
-        LIMIT 10`
+        `
+        SELECT *, (
+            SELECT id FROM images
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId" FROM images
+        ORDER BY id DESC
+        LIMIT 9
+        `
     );
 };
-
 
 
 exports.insertImages = (url, title, description, username) => {
@@ -37,6 +42,10 @@ exports.getIdImages = (id) => {
 };
 
 
+
+
+
+
 exports.getComment = (id) => {
     return db.query(
         `SELECT * FROM comments
@@ -47,20 +56,51 @@ exports.getComment = (id) => {
 }
 
 
-
-exports.getMoreImages = lastId => db.query(
-    `SELECT *, (
-        SELECT id AS lastId  FROM images
-        WHERE id = $1
+exports.getMoreImages = function (lastId) {
+    return db
+        .query(
+            `SELECT url, title, id, (
+        SELECT id FROM images
+        ORDER BY id ASC
+        LIMIT 1
+        ) AS "lowestId" FROM images
+        WHERE id < $1
         ORDER BY id DESC
+        LIMIT 10;`,
+            [lastId]
+        )
+        .then(({
+            rows
+        }) => rows);
+};
+
+
+
+
+// exports.getIdImages = function (id) {
+//     return db.query(
+//         `SELECT *, 
+//     (SELECT id
+//         FROM images
+//         WHERE id < $1
+//         ORDER BY id DESC
+//         LIMIT 1
+//     ) as "prevId",
+//     (SELECT id FROM images WHERE id > $1
+//         ORDER BY id ASC
+//         LIMIT 1)
+//         AS "nextId"
+//         FROM images WHERE id = $1`,
+//         [id]
+//     )
+// };
+
+
+exports.deleteImg = function (imageId) {
+    return db.query(
+        `DELETE FROM images 
+        WHERE id = $1
+        `,
+        [imageId]
     )
-FROM images
-WHERE id < $1
-ORDER BY id DESC
-LIMIT 4`,
-    [lastId]
-).then(
-    ({
-        rows
-    }) => rows
-);
+}

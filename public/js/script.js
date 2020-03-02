@@ -23,11 +23,16 @@
             axios.get(`/images/${this.id}`).then(function (response) {
                     console.log("response from /images+id: ", response.data);
                     console.log("this id after axios ", me.id);
+                    // console.log("me.image.prevId", prevId)
 
                     me.image.title = response.data.title;
                     me.image.description = response.data.description;
                     me.image.url = response.data.url;
                     me.image.username = response.data.username;
+                    me.image.created_at = response.data.created_at;
+
+
+                    console.log(response.data.prevId, "important console.log")
                     // me.image.images.push(response.data); non serve
                 }),
                 //console.log("this: ", this);
@@ -49,7 +54,7 @@
         watch: { //watches for props changing
             id: function () {
                 console.log("the id has changed", this.id)
-
+                var me = this;
                 axios.get(`/images/${this.id}`).then(function (response) {
                         console.log("response from /images+id: ", response.data);
                         console.log("this id after axios ", me.id);
@@ -57,13 +62,20 @@
                         me.image.title = response.data.title;
                         me.image.description = response.data.description;
                         me.image.url = response.data.url;
+                        console.log(me.image.url, "url that should be undefined")
                         me.image.username = response.data.username;
-                        // me.image.images.push(response.data); non serve
+                        me.image.created_at = response.data.created_at;
+                        console.log("created_at")
+                        // me.image.images.push(response.data); 
+                        if (this.id != imageid) {
+                            me.$emit("closecomponent");
+                        }
                     }),
                     //console.log("this: ", this);
 
                     // this.id = 9 -- NOT ALLOWED!!!
                     axios.get(`/comment/${this.id}`).then(function (response) {
+                        var me = this;
                         console.log("axios.get comments all response", response);
                         console.log("response data from axios.get comments", response.data);
 
@@ -83,6 +95,27 @@
             handleClick: function () {
                 this.$emit("message");
             },
+
+
+
+            deleteImg: function () {
+                var me = this;
+                console.log("delete req:", me.id);
+                axios.post("/delete", {
+                        imageId: me.id
+                    })
+                    .then(function (response) {
+                        console.log("response POST deleteImg:", response);
+
+                        this.id = null
+                        location.hash = "";
+
+                    })
+                    .catch(function (error) {
+                        console.log("error in POST /delete:", error);
+                    });
+            },
+
             submitComment: function (e) {
                 e.preventDefault();
 
@@ -116,7 +149,9 @@
             username: "",
             file: null,
             id: location.hash.slice(1),
-            moreButton: true
+            moreButton: true,
+            lastId: "",
+            lowestId: ""
         }, //data ends
 
         mounted: function () {
@@ -145,18 +180,26 @@
                 var me = this;
                 var lastId = me.images[me.images.length - 1].id
                 console.log("lastId", lastId)
-                axios.post("/get-more-images", {
-                    id: lastId
-                }).then(function (response) {
+                axios.get(`/getMoreImages/${lastId}`).then(function (response) {
                     console.log("axios get more images")
                     console.log("response data from getMoreImages", response)
-                    //me.images.push.apply();
+                    // me.image.title = response.data.title;
+                    // me.image.description = response.data.description;
+
+                    me.images.push.apply(me.images, response.data);
+                    let = lowestId = me.images[me.images.length - 1].lowestId
+
+                    if (me.lastId == me.lowestId) {
+                        me.moreButton = null;
+                    }
                 }).catch(function (err) {
                     console.log('err in GET more images: ', err);
                 });
 
-            },
 
+                // console.log("lowestId", lowestId)
+
+            },
 
             handleClick: function (e) {
                 e.preventDefault();
@@ -183,21 +226,16 @@
                 // console.log('file:', e.target.files[0]);
                 this.file = e.target.files[0];
             },
-            closeComponent: function () {
+            closecomponent: function () {
                 console.log("message received in Vue INSTANCE!!");
-                if (this.id) {
-                    return (this.id = null)
-                        (location.hash = "");
-
-                } else {
-                    this.id = imageid
-                }
+                this.id = null
+                location.hash = "";
             },
             toggleComponent: function (imageid) {
                 console.log("toggle component")
                 console.log('id', imageid);
                 this.id = imageid
-            },
+            }
 
 
         }

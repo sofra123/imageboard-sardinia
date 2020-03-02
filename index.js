@@ -133,20 +133,32 @@ app.post("/comment", (req, res) => {
 })
 
 
-app.post("/get-more-images", (req, res) => {
-    console.log("server for /images:lastId")
-    console.log(req.body.id, "req.body.id")
-    db.getMoreImages(req.body.id).then(result => {
-        console.log("result in GET more images", result)
-        //res.json(response);
-    }).catch(function (err) {
-        console.log("error in get more images", err)
-    })
-
-})
+app.get('/getMoreImages/:id', (req, res) => {
+    console.log('params', req.params.id)
+    //this is going to be hooked up with the database
+    db.getMoreImages(req.params.id).then(response => {
+        console.log("getMoreImages response", response)
+        res.json(response)
+    });
+});
 
 
+app.post("/delete", s3.deleteImage, (req, res) => {
 
+    const {
+        imageId
+    } = req.body;
+    db.deleteImg(imageId)
+        .then(() => {
+            console.log("deleteImage psql successfull");
+            res.json({
+                imageId: imageId
+            });
+        })
+        .catch(error => {
+            console.log("error in deleteImage", error);
+        });
+});
 
 
 app.listen(8080, () => console.log("imageboard!"))
