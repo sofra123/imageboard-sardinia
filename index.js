@@ -127,9 +127,7 @@ app.post("/comment", (req, res) => {
         console.log("error in comment upload", err)
     })
 
-    // res.json({
-    //     success: [comment]
-    // })
+   
 })
 
 

@@ -21,7 +21,8 @@ const fs = require('fs');
 
 
 
-exports.upload = (req, res, next) => { //if there is no file - tell AWS to not upload anything
+exports.upload = (req, res, next) => { 
+    //if there is no file - tell AWS to not upload anything
     if (!req.file) {
         console.log("no file")
         return res.sendStatus(500);
